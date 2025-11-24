@@ -1,3 +1,5 @@
+// main.js
+
 const config = {
     type: Phaser.AUTO,
     width: 800,
@@ -6,11 +8,11 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true // Utile pour voir les hitboxes du joueur!
+            debug: false 
         }
     },
-    // Déclare la scène que nous allons utiliser
-    scene: [GameScene] 
+    // Déclare les deux scènes, le Menu sera chargé en premier
+    scene: [MenuScene, GameScene] 
 };
 
 // Lance le jeu
