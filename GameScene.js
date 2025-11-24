@@ -9,19 +9,18 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        // 🚨 ATTENTION : C'est ici que le problème se situe très souvent !
-        // Assurez-vous que le chemin 'rubis/' est exact (minuscules/majuscules)
-        
-        // --- 1. Ressources du Joueur (RUBY) ---
+        // --- 1. Ressources du Joueur (À LA RACINE) ---
+        // Les fichiers ruby_walk.png, ruby_walk_atlas.json et ruby_walk_anim.json
+        // sont chargés à partir du dossier racine (même niveau que GameScene.js)
         this.load.atlas(
             'ruby_walk', 
-            'rubis/ruby_walk.png', 
-            'rubis/ruby_walk_atlas.json' 
+            'ruby_walk.png', 
+            'ruby_walk_atlas.json' 
         );
-        this.load.json('ruby_walk_anim', 'rubis/ruby_walk_anim.json'); 
+        this.load.json('ruby_walk_anim', 'ruby_walk_anim.json'); 
 
-        // --- 2. Ressources de la Carte (Laissées désactivées) ---
-        // Si ces fichiers sont manquants, le jeu continue sans la carte, mais peut planter si les lignes ne sont pas commentées.
+        // --- 2. Ressources de la Carte (Désactivées pour l'instant) ---
+        // Laissez ces lignes commentées tant que vous n'avez pas créé 'map.json' et 'tileset.png'
         // this.load.tilemapTiledJSON('map', 'map.json'); 
         // this.load.image('tileset', 'tileset.png'); 
     }
@@ -35,8 +34,6 @@ class GameScene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#CCCCCC'); 
 
         // --- 2. Création du Joueur ---
-        // 'ruby_walk' est la clé d'atlas définie dans preload()
-        // 'tile000' est la première frame de votre atlas de marche (ruby_walk_atlas.json)
         this.player = new Player(this, mapWidth / 2, mapHeight / 2, 'ruby_walk', 'tile000'); 
         
         // --- 3. Configuration de la Caméra et du Monde ---
@@ -49,17 +46,28 @@ class GameScene extends Phaser.Scene {
             fontSize: '20px',
             fill: '#FFFFFF',
             backgroundColor: '#00000080'
-        }).setScrollFactor(0); 
+        }).setScrollFactor(0); // setScrollFactor(0) garde le HUD fixe à l'écran
 
         // --- 5. Le Système de Temps/Survie ---
         this.statTimer = this.time.addEvent({
-            delay: 3000,
+            delay: 3000, // Toutes les 3 secondes
             callback: this.decreaseStats,
             callbackScope: this,
             loop: true
         });
 
-        // Interaction pour boire 
+        // --- 6. Debugging : Affichage des Hitboxes ($) ---
+        const dollarKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOLLAR);
+        
+        dollarKey.on('down', () => {
+            // Basculer la visibilité du graphique de débogage du moteur physique
+            this.physics.world.debugGraphic.visible = !this.physics.world.debugGraphic.visible;
+            
+            const state = this.physics.world.debugGraphic.visible ? 'ACTIVÉ' : 'DÉSACTIVÉ';
+            console.log(`Mode Debug (Hitboxes) : ${state}`);
+        });
+
+        // --- 7. Interaction : Boire (ESPACE) ---
         this.input.keyboard.on('keydown-SPACE', () => {
             if (this.player.thirst < 100) {
                 this.player.drink(30); 
@@ -76,6 +84,7 @@ class GameScene extends Phaser.Scene {
             `Faim: ${Math.max(0, this.player.hunger).toFixed(0)}`
         ]);
 
+        // Logique de défaite
         if (this.player.health <= 0) {
             this.scene.pause();
             this.statTimer.remove();
@@ -87,9 +96,11 @@ class GameScene extends Phaser.Scene {
     }
 
     decreaseStats() {
+        // Diminution de base
         this.player.thirst -= 5;
         this.player.hunger -= 3;
 
+        // Pénalités
         if (this.player.thirst <= 0) {
             this.player.health -= 2;
         }
@@ -97,6 +108,7 @@ class GameScene extends Phaser.Scene {
             this.player.health -= 1;
         }
         
+        // S'assurer que les stats sont dans les limites 0-100
         this.player.thirst = Phaser.Math.Clamp(this.player.thirst, 0, 100);
         this.player.hunger = Phaser.Math.Clamp(this.player.hunger, 0, 100);
     }
