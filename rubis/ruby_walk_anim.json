@@ -1,0 +1,100 @@
+{
+    "anims": [
+        {
+            "key": "walk_rigth_anim",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 4,
+            "frames": [
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile006"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile007"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile006"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile008"
+                }
+            ]
+        },
+        {
+            "key": "walk_left_anim",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 4,
+            "frames": [
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile009"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile010"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile009"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile011"
+                }
+            ]
+        },
+        {
+            "key": "walk_down_anim",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 4,
+            "frames": [
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile000"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile001"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile000"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile002"
+                }
+            ]
+        },
+        {
+            "key": "walk_up_anim",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 4,
+            "frames": [
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile003"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile004"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile003"
+                },
+                {
+                    "key": "ruby_walk",
+                    "frame": "tile005"
+                }
+            ]
+        }
+    ]
+}
