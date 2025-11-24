@@ -1,0 +1,15 @@
+/* style.css */
+
+/* Réinitialisation de base pour l'élément HTML et le corps */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Empêche les barres de défilement */
+    height: 100%;
+    width: 100%;
+}
+
+/* Assure que le conteneur du jeu prend toute la place disponible */
+canvas {
+    display: block; /* Supprime l'espace blanc sous l'élément en ligne */
+}
