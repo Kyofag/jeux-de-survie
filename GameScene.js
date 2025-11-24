@@ -1,4 +1,4 @@
-// GameScene.js (Mise à jour pour un Fond de Couleur)
+// GameScene.js
 
 class GameScene extends Phaser.Scene {
     constructor() {
@@ -9,60 +9,49 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        // --- 1. Ressources du Joueur ---
+        // 🚨 ATTENTION : C'est ici que le problème se situe très souvent !
+        // Assurez-vous que le chemin 'rubis/' est exact (minuscules/majuscules)
+        
+        // --- 1. Ressources du Joueur (RUBY) ---
         this.load.atlas(
             'ruby_walk', 
             'rubis/ruby_walk.png', 
-            'rubis/ruby_walk_atlas.json'
+            'rubis/ruby_walk_atlas.json' 
         );
         this.load.json('ruby_walk_anim', 'rubis/ruby_walk_anim.json'); 
 
-        // --- 2. Ressources de la Carte ---
-        // Ces lignes peuvent causer une erreur si les fichiers n'existent pas encore !
-        // Pour l'instant, nous laissons le code de la carte en commentaire
-        // si tu n'as pas encore créé les fichiers map.json et tileset.png.
+        // --- 2. Ressources de la Carte (Laissées désactivées) ---
+        // Si ces fichiers sont manquants, le jeu continue sans la carte, mais peut planter si les lignes ne sont pas commentées.
         // this.load.tilemapTiledJSON('map', 'map.json'); 
         // this.load.image('tileset', 'tileset.png'); 
     }
 
     create() {
-        // --- 1. Création du Fond Blanc/Gris (NOUVEAU) ---
-        // Ceci remplace l'écran noir si la carte Tiled n'est pas chargée.
-        this.cameras.main.setBackgroundColor('#CCCCCC'); // Gris clair pour simuler le "blanc" de la carte.
+        // Récupère les dimensions actuelles de la fenêtre (pour le redimensionnement plein écran)
+        const mapWidth = this.sys.game.config.width;
+        const mapHeight = this.sys.game.config.height;
 
-        // --- 2. Création et Configuration de la Carte (Optionnel, enlever les commentaires si les fichiers sont prêts) ---
-        /* const map = this.make.tilemap({ key: 'map' });
-        const tileset = map.addTilesetImage('Map_Tileset', 'tileset'); 
-        const groundLayer = map.createLayer('Ground', tileset, 0, 0); 
-        const collisionLayer = map.createLayer('Collision_Layer', tileset, 0, 0); 
-        collisionLayer.setCollisionByProperty({ collides: true }); 
-        */
+        // --- 1. Création du Fond (Carte Blanche/Grise) ---
+        this.cameras.main.setBackgroundColor('#CCCCCC'); 
 
-        // Si la carte n'est pas chargée, définit le monde à la taille de l'écran par défaut
-        const mapWidth = 800; // À remplacer par map.widthInPixels si la carte est chargée
-        const mapHeight = 600; // À remplacer par map.heightInPixels si la carte est chargée
-        
-        // --- 3. Création du Joueur ---
-        // Position au centre de la vue (peu importe si la carte est là ou non)
+        // --- 2. Création du Joueur ---
+        // 'ruby_walk' est la clé d'atlas définie dans preload()
+        // 'tile000' est la première frame de votre atlas de marche (ruby_walk_atlas.json)
         this.player = new Player(this, mapWidth / 2, mapHeight / 2, 'ruby_walk', 'tile000'); 
         
-        // --- 4. Collisions (Adapter si la carte est chargée) ---
-        // Si la carte est là, enlever le commentaire de la ligne ci-dessous
-        // this.physics.add.collider(this.player, collisionLayer);
-        
-        // --- 5. Configuration de la Caméra ---
+        // --- 3. Configuration de la Caméra et du Monde ---
         this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
         this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
         this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
 
-        // --- 6. L'Interface Utilisateur (HUD) ---
+        // --- 4. L'Interface Utilisateur (HUD) ---
         this.hudText = this.add.text(10, 10, 'HUD', {
             fontSize: '20px',
             fill: '#FFFFFF',
             backgroundColor: '#00000080'
         }).setScrollFactor(0); 
 
-        // --- 7. Le Système de Temps/Survie ---
+        // --- 5. Le Système de Temps/Survie ---
         this.statTimer = this.time.addEvent({
             delay: 3000,
             callback: this.decreaseStats,
@@ -70,7 +59,7 @@ class GameScene extends Phaser.Scene {
             loop: true
         });
 
-        // Interaction pour boire (inchangée)
+        // Interaction pour boire 
         this.input.keyboard.on('keydown-SPACE', () => {
             if (this.player.thirst < 100) {
                 this.player.drink(30); 
@@ -78,8 +67,6 @@ class GameScene extends Phaser.Scene {
             }
         });
     }
-    
-    // ... Le reste des méthodes update() et decreaseStats() reste inchangé ...
 
     update() {
         // Mise à jour de l'affichage du HUD
@@ -92,7 +79,7 @@ class GameScene extends Phaser.Scene {
         if (this.player.health <= 0) {
             this.scene.pause();
             this.statTimer.remove();
-            this.add.text(400, 300, 'GAME OVER', {
+            this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'GAME OVER', {
                 fontSize: '64px',
                 fill: '#FF0000'
             }).setOrigin(0.5).setScrollFactor(0);
