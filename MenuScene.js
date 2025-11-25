@@ -1,4 +1,4 @@
-// MenuScene.js
+// MenuScene.js (Dernière version)
 
 class MenuScene extends Phaser.Scene {
     constructor() {
@@ -6,21 +6,22 @@ class MenuScene extends Phaser.Scene {
     }
 
     create() {
+        // Obtenir la taille actuelle de la fenêtre
         const screenWidth = this.sys.game.config.width;
         const screenHeight = this.sys.game.config.height;
 
         this.cameras.main.setBackgroundColor('#1a1a1a'); 
 
-        // --- Titre du Jeu (CENTRÉ) ---
-        this.add.text(screenWidth / 2, screenHeight / 4, 'JEU DE SURVIE RAPIDE', {
+        // --- Titre du Jeu (Positionné plus haut) ---
+        this.add.text(screenWidth / 2, screenHeight * 0.25, 'JEU DE SURVIE RAPIDE', {
             fontSize: '48px',
             fill: '#E0E0E0', 
             fontFamily: 'Arial' 
         })
         .setOrigin(0.5);
 
-        // --- Bouton "COMMENCER LA SURVIE" (CENTRÉ) ---
-        const playButton = this.add.text(screenWidth / 2, screenHeight / 2 - 40, 'COMMENCER LA SURVIE', {
+        // --- Bouton "COMMENCER LA SURVIE" (CENTRÉ, au milieu) ---
+        const playButton = this.add.text(screenWidth / 2, screenHeight * 0.5, 'COMMENCER LA SURVIE', {
             fontSize: '32px',
             fill: '#FFD700', 
             backgroundColor: '#333333',
@@ -41,8 +42,8 @@ class MenuScene extends Phaser.Scene {
             playButton.setStyle({ fill: '#FFD700', backgroundColor: '#333333' });
         });
 
-        // --- BOUTON "OPTIONS" (CENTRÉ) ---
-        const optionsButton = this.add.text(screenWidth / 2, screenHeight / 2 + 40, 'OPTIONS', {
+        // --- BOUTON "OPTIONS" ---
+        const optionsButton = this.add.text(screenWidth / 2, screenHeight * 0.5 + 80, 'OPTIONS', {
             fontSize: '32px',
             fill: '#E0E0E0',
             backgroundColor: '#333333',
@@ -52,11 +53,13 @@ class MenuScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setInteractive({ useHandCursor: true }); 
 
+        // Confirmer que le clic fonctionne bien (Regardez la console F12)
         optionsButton.on('pointerdown', () => {
-            console.log("Ouvrir le menu d'options pour changer les contrôles.");
+            console.log("-> Clic OPTIONS détecté. La scène d'options n'est pas encore créée.");
             
-            const tempText = this.add.text(screenWidth / 2, screenHeight / 2 + 120, 
-                'Contrôles par défaut: Flèches pour le mouvement, ESPACE pour l\'action.', 
+            // Affichage temporaire (vérifiez si vous voyez ce texte apparaître)
+            const tempText = this.add.text(screenWidth / 2, screenHeight * 0.5 + 160, 
+                'Options non disponibles. Regardez la console F12!', 
                 {
                     fontSize: '18px',
                     fill: '#FFFFFF'

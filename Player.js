@@ -1,6 +1,7 @@
-// Player.js
+// Player.js (Correction de l'animation)
 
 class Player extends Phaser.Physics.Arcade.Sprite {
+    // ... (constructeur inchangé)
     constructor(scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame); 
 
@@ -9,7 +10,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.moveSpeed = 150; 
 
-        // --- Configuration de la Hitbox (Body) ---
         const playerWidth = this.width; 
         const playerHeight = this.height; 
 
@@ -22,7 +22,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         const yOffset = playerHeight - bodyHeight; 
 
         this.body.setOffset(xOffset, yOffset);
-        // ------------------------------------------
 
         this.health = 100;
         this.thirst = 100;
@@ -33,20 +32,23 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     createAnimations(scene) {
+        // VÉRIFICATION CRITIQUE : Si l'animation 'walk_down_anim' n'existe pas
         if (!scene.anims.get('walk_down_anim')) {
             const animsConfig = scene.cache.json.get('ruby_walk_anim').anims;
 
             animsConfig.forEach(animConfig => {
                 if (animConfig.key && animConfig.frames) {
                     animConfig.frames.forEach(frame => {
-                        frame.key = 'ruby_walk';
+                        // C'EST ICI QUE NOUS NOUS ASSURONS QUE LA CLÉ EST 'ruby_walk'
+                        frame.key = 'ruby_walk'; 
                     });
                     scene.anims.create(animConfig);
                 }
             });
         }
     }
-
+    // ... (le reste des fonctions preUpdate, handleMovement, drink, eat sont inchangées)
+    
     preUpdate(time, delta) {
         super.preUpdate(time, delta); 
         this.handleMovement();
