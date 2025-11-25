@@ -59,10 +59,13 @@ class GameScene extends Phaser.Scene {
             console.log(`Mode Debug (Hitboxes) : ${state}`);
         });
 
-        // --- 8. Interaction : Boire (ESPACE) ---
-        this.input.keyboard.on('keydown-SPACE', () => {
+        // --- 8. Interaction : Boire (Touche ACTION) ---
+        const actionKey = this.input.keyboard.addKey(Controls.ACTION);
+        
+        actionKey.on('down', () => {
             if (this.player.thirst < 100) {
-                this.player.drink(30); console.log("Boire! Soif : " + this.player.thirst);
+                this.player.drink(30); 
+                console.log("Boire! Soif : " + this.player.thirst);
             }
         });
     }

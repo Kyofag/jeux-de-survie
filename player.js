@@ -7,19 +7,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.cursors = scene.input.keyboard.createCursorKeys();
+        // N'utilise plus this.cursors, mais l'objet Controls global
+        // this.cursors = scene.input.keyboard.createCursorKeys(); 
         this.moveSpeed = 150; 
 
         // --- Configuration de la Hitbox (Body) ---
-        const playerWidth = this.width; // 46 pixels (largeur du sprite d'après l'atlas)
-        const playerHeight = this.height; // 61 pixels (hauteur du sprite d'après l'atlas)
+        const playerWidth = this.width; 
+        const playerHeight = this.height; 
 
         const bodyWidth = 20; 
         const bodyHeight = 20; 
 
         this.body.setSize(bodyWidth, bodyHeight);
 
-        // Centrer la Hitbox en bas du personnage (pour une vue top-down)
+        // Centrer la Hitbox en bas du personnage
         const xOffset = (playerWidth - bodyWidth) / 2;
         const yOffset = playerHeight - bodyHeight; 
 
@@ -37,13 +38,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     createAnimations(scene) {
         if (!scene.anims.get('walk_down_anim')) {
-            // Utilise les données de l'atlas que vous avez fournies
             const animsConfig = scene.cache.json.get('ruby_walk_anim').anims;
 
             animsConfig.forEach(animConfig => {
                 if (animConfig.key && animConfig.frames) {
                     animConfig.frames.forEach(frame => {
-                        // La clé de l'atlas est 'ruby_walk'
                         frame.key = 'ruby_walk';
                     });
                     scene.anims.create(animConfig);
@@ -62,19 +61,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         body.setVelocity(0); 
         let animationKey = '';
 
-        // Déplacement
-        if (this.cursors.left.isDown) {
+        // Utiliser l'objet Controls global pour le déplacement
+        const keyboard = this.scene.input.keyboard;
+
+        if (keyboard.checkDown(keyboard.addKey(Controls.LEFT))) {
             body.setVelocityX(-this.moveSpeed);
             animationKey = 'walk_left_anim';
-        } else if (this.cursors.right.isDown) {
+        } else if (keyboard.checkDown(keyboard.addKey(Controls.RIGHT))) {
             body.setVelocityX(this.moveSpeed);
             animationKey = 'walk_rigth_anim';
         }
 
-        if (this.cursors.up.isDown) {
+        if (keyboard.checkDown(keyboard.addKey(Controls.UP))) {
             body.setVelocityY(-this.moveSpeed);
             animationKey = 'walk_up_anim';
-        } else if (this.cursors.down.isDown) {
+        } else if (keyboard.checkDown(keyboard.addKey(Controls.DOWN))) {
             body.setVelocityY(this.moveSpeed);
             animationKey = 'walk_down_anim';
         }
@@ -85,7 +86,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                  this.anims.play(animationKey, true);
             }
         } else {
-            // Arrêter l'animation et afficher la frame de "repos"
             this.anims.stop();
             if(this.anims.currentAnim) {
                 this.setFrame(this.anims.currentAnim.frames[0].frame.name);
