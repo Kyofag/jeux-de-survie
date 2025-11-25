@@ -10,7 +10,6 @@ const Controls = {
 };
 // ----------------------------------------------------
 
-// Fonction pour ajuster la taille du jeu à la fenêtre
 function resize() {
     const game_width = window.innerWidth;
     const game_height = window.innerHeight;
@@ -20,7 +19,6 @@ function resize() {
     }
 }
 
-// Configuration du jeu
 const config = {
     type: Phaser.AUTO,
     width: 800, 
@@ -39,7 +37,6 @@ const config = {
     scene: [MenuScene, GameScene] 
 };
 
-// Initialisation du jeu
 const game = new Phaser.Game(config);
 
 resize(); 

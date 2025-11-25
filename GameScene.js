@@ -10,11 +10,9 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        // --- 1. Ressources du Joueur (Vérifiez la casse exacte de ces fichiers) ---
         this.load.atlas('ruby_walk', 'ruby_walk.png', 'ruby_walk_atlas.json'); 
         this.load.json('ruby_walk_anim', 'ruby_walk_anim.json'); 
 
-        // --- 2. Ressources de l'Environnement (Vérifiez la casse exacte du nom de fichier) ---
         this.load.image('tileset_simu', 'Tilemap_color1.png'); 
     }
 
@@ -22,36 +20,29 @@ class GameScene extends Phaser.Scene {
         const mapWidth = this.sys.game.config.width;
         const mapHeight = this.sys.game.config.height;
 
-        // --- 1. Création du Monde ---
         this.world = new World(this); 
         
-        // --- 2. Création du Joueur ---
         this.player = new Player(this, mapWidth / 2, mapHeight / 2, 'ruby_walk', 'tile000'); 
         
-        // --- 3. Collisions avec le Monde ---
         const collisionLayers = this.world.getCollisionLayers();
         collisionLayers.forEach(layer => {
             this.physics.add.collider(this.player, layer);
         });
 
-        // --- 4. Configuration de la Caméra ---
         this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
         this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
         this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
 
-        // --- 5. L'Interface Utilisateur (HUD) ---
         this.hudText = this.add.text(10, 10, 'HUD', {
             fontSize: '20px',
             fill: '#FFFFFF',
             backgroundColor: '#00000080'
         }).setScrollFactor(0); 
 
-        // --- 6. Le Système de Temps/Survie ---
         this.statTimer = this.time.addEvent({
             delay: 3000, callback: this.decreaseStats, callbackScope: this, loop: true
         });
 
-        // --- 7. Debugging : Affichage des Hitboxes ($) ---
         const dollarKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOLLAR);
         dollarKey.on('down', () => {
             this.physics.world.debugGraphic.visible = !this.physics.world.debugGraphic.visible;
@@ -59,7 +50,6 @@ class GameScene extends Phaser.Scene {
             console.log(`Mode Debug (Hitboxes) : ${state}`);
         });
 
-        // --- 8. Interaction : Boire (Touche ACTION définie dans main.js) ---
         const actionKey = this.input.keyboard.addKey(Controls.ACTION);
         
         actionKey.on('down', () => {
@@ -71,17 +61,14 @@ class GameScene extends Phaser.Scene {
     }
 
     update() {
-        // Mise à jour de la profondeur (effet d'overlap Zelda-like)
         this.player.setDepth(this.player.y); 
 
-        // Mise à jour de l'affichage du HUD
         this.hudText.setText([
             `Santé: ${Math.max(0, this.player.health).toFixed(0)}`,
             `Soif: ${Math.max(0, this.player.thirst).toFixed(0)}`,
             `Faim: ${Math.max(0, this.player.hunger).toFixed(0)}`
         ]);
 
-        // Logique de défaite
         if (this.player.health <= 0) {
             this.scene.pause();
             this.statTimer.remove();

@@ -15,14 +15,10 @@ class World {
         const gameWidth = this.scene.sys.game.config.width;
         const gameHeight = this.scene.sys.game.config.height;
 
-        // --- 1. CRÉATION DU SOL (Fond d'Herbe) ---
-        this.scene.cameras.main.setBackgroundColor('#68b14a'); // Vert herbe uni
-        
-        // --- 2. PLACEMENT DES MURS ET OBSTACLES (Utilisation de l'image Tilemap_color1.png) ---
+        this.scene.cameras.main.setBackgroundColor('#68b14a'); 
         
         const wallTexture = 'tileset_simu';
         
-        // Coordonnées pour les objets bloquants : [x, y] (positionnement centré)
         const obstacles = [
             [gameWidth / 2, 100], 
             [150, 300],
@@ -33,9 +29,8 @@ class World {
         obstacles.forEach(pos => {
             const rockWall = this.collisionObjects.create(pos[0], pos[1], wallTexture);
             rockWall.setOrigin(0.5); 
-            rockWall.setDepth(rockWall.y); // Pour l'effet d'overlap (Zelda-like)
+            rockWall.setDepth(rockWall.y); 
             
-            // Définir une hitbox plus petite à la base
             const spriteWidth = rockWall.width;
             const spriteHeight = rockWall.height;
             const bodyWidth = spriteWidth * 0.8;
@@ -47,7 +42,6 @@ class World {
     }
     
     createInvisibleWalls(width, height) {
-        // Crée des murs invisibles très fins aux bords de l'écran pour empêcher de sortir
         const walls = [
             [0, 0, width, 1],       
             [0, height - 1, width, 1], 
