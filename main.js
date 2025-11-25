@@ -1,6 +1,6 @@
 // main.js
 
-// Fonction pour ajuster la taille du jeu à la fenêtre (inchangée)
+// Fonction pour ajuster la taille du jeu à la fenêtre
 function resize() {
     const game_width = window.innerWidth;
     const game_height = window.innerHeight;
@@ -19,18 +19,23 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            // Mettre debug à FALSE par défaut
+            // Débogage désactivé par défaut, activable avec la touche '$' dans GameScene
             debug: false 
         }
     },
     scale: {
-        mode: Phaser.Scale.RESIZE,
+        mode: Phaser.Scale.RESIZE, // Redimensionnement actif
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
+    // Déclare les scènes
     scene: [MenuScene, GameScene] 
 };
 
+// Initialisation du jeu
 const game = new Phaser.Game(config);
 
+// Appeler la fonction de redimensionnement au lancement
 resize(); 
+
+// Détecter le changement de taille de la fenêtre et redimensionner le jeu
 window.addEventListener('resize', resize, false);

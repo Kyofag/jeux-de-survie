@@ -1,28 +1,16 @@
 /* style.css */
 
-/* ----------------------------------------------------
-   Règles pour le plein écran
-   ---------------------------------------------------- */
-
-/* Assure que l'élément racine (HTML) et le corps (BODY) 
-   n'ont pas de marges, de padding, et prennent toute la hauteur/largeur. */
+/* Règles pour le plein écran */
 html, body {
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Très important pour éviter les doubles barres de défilement */
+    overflow: hidden; 
     height: 100%;
     width: 100%;
-    /* Optionnel: définir une police de base pour les éléments non-Phaser */
     font-family: sans-serif;
 }
 
-/* ----------------------------------------------------
-   Règles pour l'élément CANVAS (Phaser)
-   ---------------------------------------------------- */
-
-/* Cibler l'élément canvas que Phaser génère. 
-   'display: block' corrige un petit espace blanc qui apparaît 
-   souvent sous les éléments inline. */
+/* Règle pour l'élément CANVAS (Phaser) */
 canvas {
     display: block; 
 }
