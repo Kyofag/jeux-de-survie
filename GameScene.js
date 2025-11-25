@@ -10,11 +10,11 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        // --- 1. Ressources du Joueur (À LA RACINE) ---
+        // --- 1. Ressources du Joueur (Vérifiez la casse exacte de ces fichiers) ---
         this.load.atlas('ruby_walk', 'ruby_walk.png', 'ruby_walk_atlas.json'); 
         this.load.json('ruby_walk_anim', 'ruby_walk_anim.json'); 
 
-        // --- 2. Ressources de l'Environnement ---
+        // --- 2. Ressources de l'Environnement (Vérifiez la casse exacte du nom de fichier) ---
         this.load.image('tileset_simu', 'Tilemap_color1.png'); 
     }
 
@@ -59,7 +59,7 @@ class GameScene extends Phaser.Scene {
             console.log(`Mode Debug (Hitboxes) : ${state}`);
         });
 
-        // --- 8. Interaction : Boire (Touche ACTION) ---
+        // --- 8. Interaction : Boire (Touche ACTION définie dans main.js) ---
         const actionKey = this.input.keyboard.addKey(Controls.ACTION);
         
         actionKey.on('down', () => {

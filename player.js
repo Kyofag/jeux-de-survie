@@ -1,4 +1,4 @@
-// Player.js
+// Player.js (Complet)
 
 class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame) {
@@ -7,8 +7,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        // N'utilise plus this.cursors, mais l'objet Controls global
-        // this.cursors = scene.input.keyboard.createCursorKeys(); 
         this.moveSpeed = 150; 
 
         // --- Configuration de la Hitbox (Body) ---
@@ -20,14 +18,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.body.setSize(bodyWidth, bodyHeight);
 
-        // Centrer la Hitbox en bas du personnage
         const xOffset = (playerWidth - bodyWidth) / 2;
         const yOffset = playerHeight - bodyHeight; 
 
         this.body.setOffset(xOffset, yOffset);
         // ------------------------------------------
 
-        // Initialisation des stats de survie
         this.health = 100;
         this.thirst = 100;
         this.hunger = 100;
@@ -61,7 +57,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         body.setVelocity(0); 
         let animationKey = '';
 
-        // Utiliser l'objet Controls global pour le déplacement
         const keyboard = this.scene.input.keyboard;
 
         if (keyboard.checkDown(keyboard.addKey(Controls.LEFT))) {
@@ -80,7 +75,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             animationKey = 'walk_down_anim';
         }
 
-        // Jouer l'animation
         if (body.velocity.x !== 0 || body.velocity.y !== 0) {
             if (!this.anims.isPlaying || this.anims.currentAnim.key !== animationKey) {
                  this.anims.play(animationKey, true);
