@@ -1,71 +1,137 @@
-// GameScene.js
+// La racine des assets, conforme à la structure de dossiers requise.
+const ASSET_ROOT = 'assets/Tiny Swords (Free Pack)/Tiny Swords (Free Pack)';
 
-class GameScene extends Phaser.Scene {
+export class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
     }
 
+    // ==========================================================
+    // PRELOAD : Chargement de tous les assets avec les nouveaux chemins
+    // ==========================================================
     preload() {
-        // Le plugin reste à la racine
-        this.load.scenePlugin('AnimatedTiles', 'AnimatedTiles.js', 'animatedTiles', 'animatedTiles');
-        
-        // --- 1. Ressources du Joueur (CORRIGÉ : dans tiny/) ---
-        this.load.atlas('ruby_walk', 'tiny/ruby_walk.png', 'tiny/ruby_walk_atlas.json'); 
-        this.load.json('ruby_walk_anim', 'tiny/ruby_walk_anim.json'); 
+        console.log("Chargement des assets avec les chemins mis à jour...");
 
-        // --- 2. Ressources des Cartes Tiled (CORRIGÉ : dans tiny/) ---
-        
-        // Charger TOUTES les images de tileset (PNG)
-        this.load.image('tileset_color1_key', 'tiny/Tilemap_color1.png'); 
-        this.load.image('tileset_color2_key', 'tiny/Tilemap_color2.png'); 
-        this.load.image('tileset_color3_key', 'tiny/Tilemap_color3.png'); 
-        this.load.image('tileset_color4_key', 'tiny/Tilemap_color4.png'); 
-        this.load.image('tileset_color5_key', 'tiny/Tilemap_color5.png'); 
-        this.load.image('tileset_water_foam_key', 'tiny/Water Foam.png'); 
-        this.load.image('tileset_water_bg_key', 'tiny/Water Background color.png'); 
-        this.load.image('tileset_tree1_key', 'tiny/Tree1.png');
-        this.load.image('tileset_tree2_key', 'tiny/Tree2.png');
-        this.load.image('tileset_tree3_key', 'tiny/Tree3.png');
+        // -------------------- CARTES TILED (.json) --------------------
+        this.load.tilemapTiledJSON('carte_centrale', ASSET_ROOT + '/Maps/carte central.json');
+        this.load.tilemapTiledJSON('carte_droite', ASSET_ROOT + '/Maps/carte droite.json');
+        this.load.tilemapTiledJSON('carte_bas', ASSET_ROOT + '/Maps/carte bas.json');
+        this.load.tilemapTiledJSON('carte_gauche', ASSET_ROOT + '/Maps/carte gauche.json');
+        this.load.tilemapTiledJSON('test_carte', ASSET_ROOT + '/Maps/test carte.json');
+        this.load.tilemapTiledJSON('test_carte_1', ASSET_ROOT + '/Maps/test carte (1).json');
 
-        // Charger les 5 fichiers JSON des cartes (Assumés à la racine)
-        this.load.tilemapTiledJSON('map_up', 'test carte.json'); 
-        this.load.tilemapTiledJSON('map_center', 'carte central.json'); 
-        this.load.tilemapTiledJSON('map_right', 'carte droite.json'); 
-        this.load.tilemapTiledJSON('map_bottom', 'carte bas.json'); 
-        this.load.tilemapTiledJSON('map_left', 'carte gauche.json');
+        // -------------------- TILESETS et DÉCORS (Images .png) --------------------
+        // Les CLÉS de chargement doivent correspondre aux noms de tilesets dans vos fichiers JSON Tiled.
+        
+        // Terrain
+        this.load.image('Tilemap_color1', ASSET_ROOT + '/Terrain/Tilemap_color1.png');
+        this.load.image('Tilemap_color4', ASSET_ROOT + '/Terrain/Tilemap_color4.png'); // Pour carte bas.json
+        this.load.image('Tilemap_color5', ASSET_ROOT + '/Terrain/Tilemap_color5.png'); // Pour carte gauche.json
+        this.load.image('Water Background color', ASSET_ROOT + '/Terrain/Water Background color.png');
+        this.load.image('Water Foam', ASSET_ROOT + '/Terrain/Water Foam.png');
+        
+        // Décorations
+        const DECOR_PATH = ASSET_ROOT + '/Decorations/Trees';
+        this.load.image('Tree1', DECOR_PATH + '/Tree1.png');
+        this.load.image('Tree2', DECOR_PATH + '/Tree2.png');
+        this.load.image('Tree3', DECOR_PATH + '/Tree3.png');
+
+        // Monstres (double imbrication)
+        const MONSTER_PATH = ASSET_ROOT + '/woodland monsters sprite sheet/woodland monsters sprite sheet';
+        this.load.image('slime_spritesheet', MONSTER_PATH + '/slime_spritesheet.png');
+        this.load.image('vulture_spritesheet', MONSTER_PATH + '/vulture_spritesheet.png');
+
+        // -------------------- PERSONNAGE RUBY (Atlas de Sprites) --------------------
+        const RUBY_PATH = ASSET_ROOT + '/Characters/Ruby';
+        
+        // Chargement de l'Atlas de marche
+        this.load.atlas(
+            'ruby_walk_atlas',
+            RUBY_PATH + '/ruby_walk.png', 
+            RUBY_PATH + '/ruby_walk_atlas.json'
+        );
+        // Chargement de l'Atlas de course
+        this.load.atlas(
+            'ruby_run_atlas',
+            RUBY_PATH + '/ruby_run.png', 
+            RUBY_PATH + '/ruby_run_atlas.json'
+        );
+        
+        // Chargement des données d'animation si elles sont dans un JSON séparé
+        this.load.json('ruby_anim_data', RUBY_PATH + '/ruby_walk_anim.json');
     }
 
+    // ==========================================================
+    // CREATE : Création des objets et configuration de la scène
+    // ==========================================================
     create() {
-        // 1. Création du Monde
-        this.world = new World(this); 
+        // 1. Création de la carte (nous utilisons 'carte_centrale' par défaut)
+        const map = this.make.tilemap({ key: 'carte_centrale' });
         
-        // Activation des Tuiles Animées
-        this.animatedTiles.init(this.world.map); 
+        // 2. Association des Tilesets (Les clés 'Tilemap_colorX' doivent avoir été chargées dans preload)
+        // Le premier argument est le nom du tileset DANS le fichier JSON.
+        // Le second argument est la CLÉ de l'image que vous avez donnée dans preload().
+        const mainTileset = map.addTilesetImage('Tilemap_color1', 'Tilemap_color1');
+        const treeTileset1 = map.addTilesetImage('Tree1', 'Tree1');
+        const treeTileset2 = map.addTilesetImage('Tree2', 'Tree2');
+        const treeTileset3 = map.addTilesetImage('Tree3', 'Tree3');
 
-        // 2. Création du Joueur au centre de la carte centrale
-        const map_width_tiles = this.world.MAP_WIDTH_TILES;
-        const map_height_tiles = this.world.MAP_HEIGHT_TILES;
-        const tile_size = this.world.TILE_SIZE;
+        // 3. Création des couches (Layers) de la carte
+        // Les noms 'Base', 'Decors', etc., dépendent de vos noms de couches dans Tiled
+        map.createLayer('Base', mainTileset, 0, 0); 
+        map.createLayer('Decors', mainTileset, 0, 0); 
         
-        // Position au milieu de la carte centrale (col 1, ligne 1)
-        const startX = (1 * map_width_tiles + (map_width_tiles / 2)) * tile_size;
-        const startY = (1 * map_height_tiles + (map_height_tiles / 2)) * tile_size;
+        // 4. Création du joueur et des animations
+        this.player = this.physics.add.sprite(200, 200, 'ruby_walk_atlas'); 
+        this.player.setCollideWorldBounds(true);
         
-        this.player = new Player(this, startX, startY, 'ruby_walk', 'tile000'); 
-        
-        // 3. Collisions
-        const collisionLayers = this.world.getCollisionLayers();
-        collisionLayers.forEach(layer => {
-            this.physics.add.collider(this.player, layer);
+        // Création de l'animation de marche
+        this.anims.create({
+            key: 'walk',
+            // Utiliser la clé de l'atlas chargé
+            frames: this.anims.generateFrameNames('ruby_walk_atlas', { 
+                start: 0, 
+                end: 5, 
+                prefix: 'walk-' // Ajustez 'walk-' si vos frames sont nommées différemment
+            }),
+            frameRate: 10,
+            repeat: -1
         });
+        
+        this.player.play('walk');
 
-        // 4. Caméra
-        this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+        // 5. Ajout des entrées clavier
+        this.cursors = this.input.keyboard.createCursorKeys();
 
-        // 5. Interface/Inventaire (Prochaine étape)
+        // 6. Configuration de la caméra pour suivre le joueur
+        this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     }
 
+    // ==========================================================
+    // UPDATE : Logique de jeu (mouvement, collisions, etc.)
+    // ==========================================================
     update() {
-        // Logique de jeu (le mouvement du joueur est géré dans Player.js)
+        const speed = 250;
+        this.player.setVelocity(0);
+
+        if (this.cursors.left.isDown) {
+            this.player.setVelocityX(-speed);
+        } else if (this.cursors.right.isDown) {
+            this.player.setVelocityX(speed);
+        }
+
+        if (this.cursors.up.isDown) {
+            this.player.setVelocityY(-speed);
+        } else if (this.cursors.down.isDown) {
+            this.player.setVelocityY(speed);
+        }
+
+        // Gestion des animations (si vous n'avez pas de script dédié)
+        if (this.player.body.velocity.x !== 0 || this.player.body.velocity.y !== 0) {
+            this.player.anims.play('walk', true); // Jouer l'animation de marche
+        } else {
+            this.player.anims.stop(); // Arrêter l'animation si immobile
+        }
     }
 }
