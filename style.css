@@ -1,16 +1,12 @@
 /* style.css */
 
-/* Règles pour le plein écran */
-html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden; 
-    height: 100%;
-    width: 100%;
-    font-family: sans-serif;
+body { 
+    margin: 0; 
+    background-color: #000000; /* Fond noir si le canvas ne remplit pas tout */
 }
 
-/* Règle pour l'élément CANVAS (Phaser) */
-canvas {
-    display: block; 
+canvas { 
+    display: block; /* Essentiel pour retirer l'espace sous le canvas */
 }
+
+/* Vous pouvez ajouter ici d'autres styles pour votre menu, etc. */

@@ -1,4 +1,4 @@
-// MenuScene.js (Dernière version)
+// MenuScene.js
 
 class MenuScene extends Phaser.Scene {
     constructor() {
@@ -6,13 +6,12 @@ class MenuScene extends Phaser.Scene {
     }
 
     create() {
-        // Obtenir la taille actuelle de la fenêtre
         const screenWidth = this.sys.game.config.width;
         const screenHeight = this.sys.game.config.height;
 
         this.cameras.main.setBackgroundColor('#1a1a1a'); 
 
-        // --- Titre du Jeu (Positionné plus haut) ---
+        // Titre du Jeu
         this.add.text(screenWidth / 2, screenHeight * 0.25, 'JEU DE SURVIE RAPIDE', {
             fontSize: '48px',
             fill: '#E0E0E0', 
@@ -20,7 +19,7 @@ class MenuScene extends Phaser.Scene {
         })
         .setOrigin(0.5);
 
-        // --- Bouton "COMMENCER LA SURVIE" (CENTRÉ, au milieu) ---
+        // Bouton "COMMENCER LA SURVIE"
         const playButton = this.add.text(screenWidth / 2, screenHeight * 0.5, 'COMMENCER LA SURVIE', {
             fontSize: '32px',
             fill: '#FFD700', 
@@ -42,7 +41,7 @@ class MenuScene extends Phaser.Scene {
             playButton.setStyle({ fill: '#FFD700', backgroundColor: '#333333' });
         });
 
-        // --- BOUTON "OPTIONS" ---
+        // Bouton "OPTIONS"
         const optionsButton = this.add.text(screenWidth / 2, screenHeight * 0.5 + 80, 'OPTIONS', {
             fontSize: '32px',
             fill: '#E0E0E0',
@@ -53,19 +52,8 @@ class MenuScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setInteractive({ useHandCursor: true }); 
 
-        // Confirmer que le clic fonctionne bien (Regardez la console F12)
         optionsButton.on('pointerdown', () => {
-            console.log("-> Clic OPTIONS détecté. La scène d'options n'est pas encore créée.");
-            
-            // Affichage temporaire (vérifiez si vous voyez ce texte apparaître)
-            const tempText = this.add.text(screenWidth / 2, screenHeight * 0.5 + 160, 
-                'Options non disponibles. Regardez la console F12!', 
-                {
-                    fontSize: '18px',
-                    fill: '#FFFFFF'
-                }).setOrigin(0.5);
-            
-            this.time.delayedCall(3000, () => { tempText.destroy(); }, [], this);
+            this.scene.start('OptionsScene'); 
         });
 
         optionsButton.on('pointerover', () => {

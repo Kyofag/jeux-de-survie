@@ -1,7 +1,6 @@
-// Player.js (Correction de l'animation)
+// Player.js
 
 class Player extends Phaser.Physics.Arcade.Sprite {
-    // ... (constructeur inchangé)
     constructor(scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame); 
 
@@ -10,6 +9,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.moveSpeed = 150; 
 
+        // Configuration de la hitbox
         const playerWidth = this.width; 
         const playerHeight = this.height; 
 
@@ -23,6 +23,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.body.setOffset(xOffset, yOffset);
 
+        // Statistiques de Survie
         this.health = 100;
         this.thirst = 100;
         this.hunger = 100;
@@ -32,14 +33,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     createAnimations(scene) {
-        // VÉRIFICATION CRITIQUE : Si l'animation 'walk_down_anim' n'existe pas
+        // Crée les animations si elles n'existent pas déjà
         if (!scene.anims.get('walk_down_anim')) {
             const animsConfig = scene.cache.json.get('ruby_walk_anim').anims;
 
             animsConfig.forEach(animConfig => {
                 if (animConfig.key && animConfig.frames) {
                     animConfig.frames.forEach(frame => {
-                        // C'EST ICI QUE NOUS NOUS ASSURONS QUE LA CLÉ EST 'ruby_walk'
+                        // Assurez que la clé de l'atlas est correcte ('ruby_walk')
                         frame.key = 'ruby_walk'; 
                     });
                     scene.anims.create(animConfig);
@@ -47,7 +48,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             });
         }
     }
-    // ... (le reste des fonctions preUpdate, handleMovement, drink, eat sont inchangées)
     
     preUpdate(time, delta) {
         super.preUpdate(time, delta); 
@@ -77,6 +77,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             animationKey = 'walk_down_anim';
         }
 
+        // Normaliser la vitesse si le joueur se déplace en diagonale
+        body.velocity.normalize().scale(this.moveSpeed);
+
         if (body.velocity.x !== 0 || body.velocity.y !== 0) {
             if (!this.anims.isPlaying || this.anims.currentAnim.key !== animationKey) {
                  this.anims.play(animationKey, true);
@@ -84,6 +87,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         } else {
             this.anims.stop();
             if(this.anims.currentAnim) {
+                // Remet le sprite sur la première image de l'animation en cours (immobile)
                 this.setFrame(this.anims.currentAnim.frames[0].frame.name);
             }
         }

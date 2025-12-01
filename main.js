@@ -1,43 +1,32 @@
 // main.js
 
-// --- Objet de configuration des contrôles ---
-const Controls = {
-    UP: Phaser.Input.Keyboard.KeyCodes.UP,
-    DOWN: Phaser.Input.Keyboard.KeyCodes.DOWN,
-    LEFT: Phaser.Input.Keyboard.KeyCodes.LEFT,
-    RIGHT: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-    ACTION: Phaser.Input.Keyboard.KeyCodes.SPACE 
-};
-// ----------------------------------------------------
-
-function resize() {
-    const game_width = window.innerWidth;
-    const game_height = window.innerHeight;
-    
-    if (game) {
-        game.scale.resize(game_width, game_height);
-    }
-}
-
 const config = {
     type: Phaser.AUTO,
-    width: 800, 
+    width: 800,
     height: 600,
+    parent: 'game-container',
+    pixelArt: true,
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 0 },
-            debug: false 
+            // debug: true, 
+            gravity: { y: 0 }
         }
     },
     scale: {
         mode: Phaser.Scale.RESIZE, 
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [MenuScene, GameScene] 
+    scene: [MenuScene, OptionsScene, GameScene] 
+};
+
+// Définition des contrôles par défaut (Z, S, Q, D, E)
+const Controls = {
+    UP: Phaser.Input.Keyboard.KeyCodes.Z,
+    DOWN: Phaser.Input.Keyboard.KeyCodes.S,
+    LEFT: Phaser.Input.Keyboard.KeyCodes.Q,
+    RIGHT: Phaser.Input.Keyboard.KeyCodes.D,
+    ACTION: Phaser.Input.Keyboard.KeyCodes.E
 };
 
 const game = new Phaser.Game(config);
-
-resize(); 
-window.addEventListener('resize', resize, false);
