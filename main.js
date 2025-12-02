@@ -1,24 +1,24 @@
-import { GameScene } from './src/GameScene.js';
+// main.js
 
-// Configuration du jeu Phaser
+// L'importation est maintenant './GameScene.js'
+import { GameScene } from './GameScene.js';
+
 const config = {
-    type: Phaser.AUTO, // Utilise WebGL si possible, sinon Canvas
-    width: 960, // 30 tuiles * 32px (ou 15 tuiles * 64px si vous utilisez un scale)
-    height: 640, // 20 tuiles * 32px (ou 10 tuiles * 64px)
+    type: Phaser.AUTO,
+    width: 960, 
+    height: 640,
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    // Le système de physique est essentiel pour le mouvement du joueur
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 0 }, // Pas de gravité pour un jeu top-down
-            debug: true // Mettez à 'false' en production
+            gravity: { y: 0 }, 
+            debug: true
         }
     },
     scene: [GameScene]
 };
 
-// Lance le jeu !
-const game = new Phaser.Game(config);
+new Phaser.Game(config);

@@ -1,20 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <title>Mon Jeu de Survie Phaser</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiny Swords - Déplacement Minimal</title>
+    
     <script src="//cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.js"></script>
     
-    <link rel="stylesheet" href="style.css"> 
-    
-    </head>
+    <style>
+        body {
+            /* Centre le jeu sur la page */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #333; /* Couleur de fond sombre pour le contraste */
+        }
+    </style>
+</head>
 <body>
-    <script src="AnimatedTiles.js"></script> 
-    <script src="Player.js"></script> 
-    <script src="World.js"></script> 
-    <script src="MenuScene.js"></script> 
-    <script src="OptionsScene.js"></script> 
-    <script src="GameScene.js"></script> 
-    <script src="main.js"></script> 
+    
+    <script type="module" src="main.js"></script>
+    
 </body>
 </html>
