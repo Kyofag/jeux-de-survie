@@ -1,4 +1,4 @@
-// GameScene.js (maintenant à la racine du projet)
+// GameScene.js (À placer à la racine de votre projet, à côté de main.js)
 
 const ASSET_ROOT = 'assets/Tiny Swords (Free Pack)/Tiny Swords (Free Pack)';
 
@@ -8,85 +8,90 @@ export class GameScene extends Phaser.Scene {
     }
 
     // ==========================================================
-    // PRELOAD : Chargement des assets (Plus d'assets requis par carte centrale)
+    // PRELOAD : Chargement des assets
     // ==========================================================
     preload() {
-        console.log("PRELOAD : Démarrage du chargement...");
+        console.log("PRELOAD : Démarrage du chargement des assets...");
         
         // --- CARTES ET TILESETS ---
         this.load.tilemapTiledJSON('carte_centrale', ASSET_ROOT + '/Maps/carte central.json');
         
-        // Tilesets (Clés qui DOIVENT correspondre aux noms dans Tiled Map)
+        // Tilesets requis par la carte central.json
+        this.load.image('Shadow', ASSET_ROOT + '/Terrain/Shadow.png');
         this.load.image('Tilemap_color1', ASSET_ROOT + '/Terrain/Tilemap_color1.png');
-        this.load.image('Water Background color', ASSET_ROOT + '/Terrain/Water Background color.png'); // Ajouté (souvent utilisé)
-        this.load.image('Water Foam', ASSET_ROOT + '/Terrain/Water Foam.png'); // Ajouté (souvent utilisé)
+        this.load.image('Tilemap_color2', ASSET_ROOT + '/Terrain/Tilemap_color2.png');
+        this.load.image('Tilemap_color3', ASSET_ROOT + '/Terrain/Tilemap_color3.png');
+        this.load.image('Tilemap_color4', ASSET_ROOT + '/Terrain/Tilemap_color4.png');
+        this.load.image('Tilemap_color5', ASSET_ROOT + '/Terrain/Tilemap_color5.png');
+        this.load.image('Water Background color', ASSET_ROOT + '/Terrain/Water Background color.png');
+        this.load.image('Water Foam', ASSET_ROOT + '/Terrain/Water Foam.png');
         
+        // Arbres et Décorations
         const DECOR_PATH = ASSET_ROOT + '/Decorations/Trees';
         this.load.image('Tree1', DECOR_PATH + '/Tree1.png');
         this.load.image('Tree2', DECOR_PATH + '/Tree2.png');
         this.load.image('Tree3', DECOR_PATH + '/Tree3.png');
+        this.load.image('Tree4', DECOR_PATH + '/Tree4.png');
 
         // --- JOUEUR ---
         const RUBY_PATH = ASSET_ROOT + '/Characters/Ruby';
-        this.load.atlas('ruby_walk_atlas', RUBY_PATH + '/ruby_walk.png', RUBY_PATH + '/ruby_walk_atlas.json');
+        this.load.atlas(
+            'ruby_walk_atlas',
+            RUBY_PATH + '/ruby_walk.png', 
+            RUBY_PATH + '/ruby_walk_atlas.json'
+        );
     }
 
     // ==========================================================
     // CREATE : Affichage de la carte et création du personnage
     // ==========================================================
     create() {
-        console.log("CREATE : Démarrage de la création des éléments...");
+        console.log("CREATE : Création des éléments...");
+
+        // --- Diagnostic Visuel ---
+        this.add.text(10, 10, 'SCENE ACTIVE', { 
+            fontSize: '32px', fill: '#FF0000', backgroundColor: '#FFFFFF' 
+        }).setScrollFactor(0);
         
-        // --- 1. CARTE (DIAGNOSTIC) ---
+        // --- 1. CARTE ---
         const map = this.make.tilemap({ key: 'carte_centrale' });
-        
-        if (!map) {
-            console.error("ERREUR CRITIQUE 1: La carte JSON n'a pas été chargée. Vérifiez le chemin dans preload().");
-            return;
-        }
+        if (!map) return; 
 
-        // --- 2. ASSOCIATION DES TILESETS (DIAGNOSTIC) ---
-        // Les noms des variables et le second argument sont les clés de preload.
-        // Le premier argument ('Tilemap_color1') est le nom du tileset DANS le JSON Tiled.
-        const mainTileset = map.addTilesetImage('Tilemap_color1', 'Tilemap_color1');
-        const tree1 = map.addTilesetImage('Tree1', 'Tree1');
-        const tree2 = map.addTilesetImage('Tree2', 'Tree2');
-        const water = map.addTilesetImage('Water Background color', 'Water Background color');
-
-        if (!mainTileset) {
-            console.error("ERREUR CRITIQUE 2: Le tileset principal 'Tilemap_color1' n'a pas pu être associé. La clé est-elle correcte dans Tiled ?");
-            return;
-        }
+        // --- 2. ASSOCIATION DES TILESETS ---
+        // Les clés sont les noms des assets chargés dans preload.
+        map.addTilesetImage('Shadow', 'Shadow');
+        map.addTilesetImage('Tilemap_color1', 'Tilemap_color1');
+        map.addTilesetImage('Tilemap_color2', 'Tilemap_color2');
+        map.addTilesetImage('Tilemap_color3', 'Tilemap_color3');
+        map.addTilesetImage('Tilemap_color4', 'Tilemap_color4');
+        map.addTilesetImage('Tilemap_color5', 'Tilemap_color5');
+        map.addTilesetImage('Water Background color', 'Water Background color');
+        map.addTilesetImage('Water Foam', 'Water Foam');
+        map.addTilesetImage('Tree1', 'Tree1');
+        map.addTilesetImage('Tree2', 'Tree2');
+        map.addTilesetImage('Tree3', 'Tree3');
+        map.addTilesetImage('Tree4', 'Tree4');
         
-        // --- 3. CRÉATION DES COUCHES (COUVERTURE DE L'ERREUR DE NOM DE COUCHE) ---
-        // J'utilise ici un nom générique 'Calque' suivi d'un numéro pour couvrir les noms que vous avez peut-être utilisés.
-        // VÉRIFIEZ LE NOM EXACT DANS VOTRE TILE MAP ! (Ex: 'Ground', 'Objects', 'Walls')
-        
-        // Utilisez tous les tilesets pour chaque couche pour la robustesse: [mainTileset, tree1, water, ...]
-        const allTilesets = [mainTileset, tree1, tree2, water]; 
+        // On récupère tous les tilesets pour la création des couches
+        const allTilesets = map.tilesets;
 
+        // --- 3. CRÉATION DES COUCHES (avec les noms exacts de votre fichier JSON) ---
         try {
-            // ESSAYEZ AVEC LES NOMS LES PLUS COURANTS POUR TINY SWORDS
-            map.createLayer('Ground', allTilesets, 0, 0); 
-            map.createLayer('Foliage', allTilesets, 0, 0); 
-            map.createLayer('Objects', allTilesets, 0, 0); 
-            
-            // Si vos couches s'appellent Base et Decors
-            // map.createLayer('Base', allTilesets, 0, 0); 
-            // map.createLayer('Decors', allTilesets, 0, 0); 
-
+            map.createLayer('Calque de Tuiles 1', allTilesets, 0, 0); 
+            map.createLayer('Calque de Tuiles 2', allTilesets, 0, 0); 
         } catch (e) {
-            console.error("ERREUR CRITIQUE 3: La création d'une couche a échoué. Cela signifie que le nom de la couche dans Tiled NE CORRESPOND PAS à celui que vous avez utilisé dans map.createLayer().");
-            console.error("Vérifiez les noms des couches dans votre fichier Tiled ! (Erreur détaillée:", e.message, ")");
+            console.error("ÉCHEC DE CRÉATION DE COUCHE. L'un des noms de couches est incorrect.");
             return;
         }
-        
-        // --- 4. JOUEUR ET CONTRÔLES (reste inchangé) ---
-        this.player = this.physics.add.sprite(200, 200, 'ruby_walk_atlas'); 
+
+        // --- 4. JOUEUR ---
+        const centerX = map.widthInPixels / 2;
+        const centerY = map.heightInPixels / 2;
+        this.player = this.physics.add.sprite(centerX, centerY, 'ruby_walk_atlas'); 
         this.player.setCollideWorldBounds(true);
         this.cursors = this.input.keyboard.createCursorKeys();
         
-        // ... (Animations et Caméra) ...
+        // --- ANIMATIONS ---
         this.anims.create({
             key: 'walk',
             frames: this.anims.generateFrameNames('ruby_walk_atlas', { start: 0, end: 5, prefix: 'walk-' }),
@@ -94,12 +99,34 @@ export class GameScene extends Phaser.Scene {
             repeat: -1
         });
         this.player.play('walk');
-
-        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-        this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
         
-        console.log("CREATE : Tous les éléments ont été créés sans erreur critique JavaScript.");
+        // --- CAMÉRA ---
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+        this.cameras.main.zoom = 1.0; 
+        this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
     }
-    
-    // ... (update() reste inchangé) ...
+
+    // ==========================================================
+    // UPDATE : Logique de Mouvement
+    // ==========================================================
+    update() {
+        const speed = 250;
+        this.player.setVelocity(0); 
+        let isMoving = false;
+
+        if (this.cursors.left.isDown || this.cursors.right.isDown || this.cursors.up.isDown || this.cursors.down.isDown) {
+            isMoving = true;
+        }
+
+        if (this.cursors.left.isDown) this.player.setVelocityX(-speed);
+        else if (this.cursors.right.isDown) this.player.setVelocityX(speed);
+        if (this.cursors.up.isDown) this.player.setVelocityY(-speed);
+        else if (this.cursors.down.isDown) this.player.setVelocityY(speed);
+
+        if (isMoving) {
+            this.player.anims.play('walk', true); 
+        } else {
+            this.player.anims.stop(); 
+        }
+    }
 }
